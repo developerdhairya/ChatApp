@@ -1,5 +1,7 @@
 const chatForm = document.getElementById('chat-form');
 const chatMessages = document.querySelector('.chat-messages');
+const roomName=document.getElementById('room-name');
+const userList=document.getElementById('users');
 
 const socket = io();
 
@@ -11,6 +13,12 @@ socket.on('message', message => {
     displayMessage(message);
     chatMessages.scrollTop = chatMessages.scrollHeight;
 });
+
+socket.on('roomUsers',({room,users})=>{
+    displayRoomName(room);
+    displayUsers(users);
+});
+
 
 chatForm.addEventListener('submit', (e) => {
     e.preventDefault();
@@ -43,4 +51,14 @@ function getUsernameAndRoom(key) {
         username,
         room
     }
+}
+
+function displayRoomName(room){
+    roomName.innerText=room;
+}
+
+function displayUsers(users){
+    userList.innerHTML=`
+        ${users.map((user) => `<li>${user.username}</li>`).join('')}
+    `;
 }
